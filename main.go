@@ -1,19 +1,20 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 	"strconv"
-	"database/sql"
+	"strings"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type Products struct {
-	quantity int64
-	price int64
+	quantity       int64
+	price          int64
 	isRefrigirator bool
 }
 
@@ -65,7 +66,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 			product := Products{}
 			err = row.Scan(&product.price, &product.quantity)
 
-			updateResult, err := db.Exec("update products set `quantity` = ? and price = ?", product.quantity, product.price)
+			updateResult, err := db.Exec("update products set `quantity` = ? and price = ? where id = ?", quantity, price, id)
 		}
 	} else if selectedType == "refrigerator" {
 		_, _ = file.WriteString("Product is of type: refrigerator \n")
@@ -89,7 +90,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 			product := Products{}
 			err = row.Scan(&product.price, &product.quantity)
 
-			updateResult, err := db.Exec("update products set `quantity` = ? and price = ? and isRefrigirator = ?", product.quantity, product.price, true)
+			updateResult, err := db.Exec("update products set `quantity` = ? and price = ? and isRefrigirator = ? where id = ?", quantity, price, true, id)
 		}
 	}
 
